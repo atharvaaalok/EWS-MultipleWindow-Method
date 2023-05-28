@@ -2,7 +2,7 @@
 This contains code for determining the warning time of Early Warning Signals (EWS).
 
 ## Note
-* Professional Plots
+* Professional Plots  
    Hello  
    Hi  
 
