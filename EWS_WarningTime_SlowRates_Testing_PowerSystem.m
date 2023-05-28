@@ -28,7 +28,7 @@ Y0 = [x0; y0; omega0; E0; Pm0];
 mu = [0.0001];
 t2 = 2000;
 
-filename = sprintf('Data/Slow_Rates/Power_System/Rate_0.0001.mat');
+filename = sprintf('../Data/Slow_Rates/Power_System/Rate_0.0001.mat');
 load(filename);
 
 tSol;

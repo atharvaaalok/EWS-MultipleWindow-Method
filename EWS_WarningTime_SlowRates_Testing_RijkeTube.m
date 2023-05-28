@@ -9,7 +9,7 @@ figure_counter = 0;
 
 % Load pressure data from file
 data_folder_location = '.';
-pressure_file_location_in_data_folder = 'Data/Slow_Rates/Rijke_Tube';
+pressure_file_location_in_data_folder = '../Data/Slow_Rates/Rijke_Tube';
 pressure_file_number = 4;
 pressure_file_location = sprintf('%s/%s/%d.txt', data_folder_location, pressure_file_location_in_data_folder, pressure_file_number);
 
