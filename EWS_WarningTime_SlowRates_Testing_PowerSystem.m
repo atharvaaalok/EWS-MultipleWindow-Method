@@ -237,6 +237,6 @@ xlabel('time');
 ylabel('window count');
 
 % Save the figure
-prediction_map_figure_name = sprintf("Prediction_Maps/Prediction_Map_TT%d_SW%.2f_OR%.2f_SL%.5f_mu%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, mu);
+prediction_map_figure_name = sprintf("Prediction_Maps/PowerSystems/Prediction_Map_TT%d_SW%.2f_OR%.2f_SL%.5f_mu%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, mu);
 saveas(gcf, prediction_map_figure_name);
 

@@ -12,7 +12,7 @@ function [tau, z, p, H] = Modified_MannKendall_test(t, X, alpha, alpha_ac, gpu_s
     % tau   - The kendall rank correlation coefficient for the timeseries.
     % z     - z-score of the obtained tau value.
     % p     - p-value of the obtained tau value.
-    % H     - Denotes whether to reject the null hypothesis or not. Null Hypothesis: There is no trend in the data. 0 -> retain the null hypothesis, 1 -> reject and increasing trend, -1 -> reject and decreasing trend.
+    % H     - Denotes whether to reject the null hypothesis or not. Null Hypothesis: There is no trend in the data. 0 -> retain the null hypothesis, 1 -> reject and increasing trend, -1 -> reject and decreasing trend, 2 -> if variance turns out to be negative.
 
 
     %% REFERENCES
@@ -115,7 +115,7 @@ function [tau, z, p, H] = Modified_MannKendall_test(t, X, alpha, alpha_ac, gpu_s
     
     % Use GPU to find median of large vectors much faster, if the GPU is available.
     % For large arrays GPU is much faster for finding median.
-    % But, f array is too short then GPU takes more time as there is overhead for transferring the array to GPU memory
+    % But, if array is too short then GPU takes more time as there is overhead for transferring the array to GPU memory
     % Experimentally found smallest length of array above which GPU becomes faster is ~450
     if length(X) > gpu_shift_critical_size
         gpu_available = canUseGPU();
@@ -183,6 +183,7 @@ function [tau, z, p, H] = Modified_MannKendall_test(t, X, alpha, alpha_ac, gpu_s
 
     tic
     
+    % Since the correction factor for the true variance is an approximation, in rare cases it may turn out to be negative. In that scenario abort the function and return H = 2 as exception value
     if var_S < 0
         z = 0;
         p = 0.5;
