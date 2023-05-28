@@ -1,9 +1,11 @@
 # EWS Multiple Window Method
 This contains code for determining the warning time of Early Warning Signals (EWS).
-[Professional Plots](https://in.mathworks.com/matlabcentral/fileexchange/100766-professional-plots)
-<a href="https://www.w3schools.com/" target="_blank">Visit W3Schools!</a>
 
 ## Note
+* Professional Plots
+   Hello  
+   Hi  
+
 <dl>
   <dt>Professional Plots</dt>
   <dd>- For improving plot quality and for using a pre-defined color palette this code uses the [Professional Plots](https://in.mathworks.com/matlabcentral/fileexchange/100766-professional-plots) plotting toolbox by Atharva Aalok. To run codes one has to first download the toolbox from either the above link or through the MATLAB add-ons manager and add it to the MATLAB path.</dd>
