@@ -1,4 +1,4 @@
-function [tau, z, p, H] = MMK(t, X, alpha, alpha_ac, gpu_use, print_bool)
+function [tau, z, p, H, median_time_taken] = MMK(t, X, alpha, alpha_ac, gpu_use, print_bool, median_time_taken)
     
     %% FUNCTION INPUTS AND OUTPUTS
     
@@ -212,20 +212,18 @@ function [tau, z, p, H] = MMK(t, X, alpha, alpha_ac, gpu_use, print_bool)
 
     MMK_total_time = a + b + c + d + e + f + g;
 
-    global var
-
     if print_bool == 1
         fprintf("a = %f\n", a);
         fprintf("b = %f\n", b);
         fprintf("c = %f\n", c);
         fprintf("d = %f\n", d);
-        var = [var, d];
+        median_time_taken = [median_time_taken, d];
         fprintf("e = %f\n", e);
         fprintf("f = %f\n", f);
         fprintf("g = %f\n", g);
         fprintf("MMK_total_time = %f\n", MMK_total_time);
     else
-        var = [var, d];
+        median_time_taken = [median_time_taken, d];
     end
 
 
