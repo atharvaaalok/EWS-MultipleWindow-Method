@@ -238,7 +238,7 @@ xlabel('Time');
 ylabel('Window Count');
 
 % Save the figure
-prediction_map_windowcount_figure_name = sprintf("Prediction_Maps/PowerSystems/WindowCount/Prediction_Map_WindowCount_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+prediction_map_windowcount_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Count/Prediction_Map_WindowCount_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowcount_figure_name);
 
 % Plot the Prediction Map with y-axis as: Window size
@@ -270,6 +270,6 @@ xlabel('Time');
 ylabel('Window Size');
 
 % Save the figure
-prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/WindowSize/Prediction_Map_WindowSize_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Size/Prediction_Map_WindowSize_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowsize_figure_name);
 
