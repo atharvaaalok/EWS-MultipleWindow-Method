@@ -146,12 +146,12 @@ for k = 1: length(window_size_list)
     window_length_in_seconds = window_size * delta_t;
     window_step_in_seconds = window_step * delta_t;
     
-    tic
+    EWS_tic = tic;
 
     % Generate EWS timeseries for particular window size
     [EWS_details, RateRMS_details] = EWS_Timeseries(time, state_timeseries, parameter_variation, delta_t, window_size, window_step);
     
-    t1 = toc;
+    t1 = toc(EWS_tic);
 
     % Plot RMS timeseries on top of state timeseries
     figure(10);
@@ -181,7 +181,7 @@ for k = 1: length(window_size_list)
         % Set significance values
         significance_value_tau = 0.05;
         significance_value_ac = 0.05;
-        gpu_shift_critical_size = 550;
+        gpu_shift_critical_size = 520;
 
         if j == n_ktau
             print_bool = 1;
@@ -209,15 +209,16 @@ fprintf("loop_time = %f\n", loop_time);
 
 %% PLOT THE VARIATION OF P-VALUES AND H
 
+% Plot the Prediction Map with y-axis as: Window count
 figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
 
-y_val = length(window_size_list);
+y_val = 0;
 
 for k = 1: length(window_size_list)
     
-    y_val = y_val - 1;
+    y_val = y_val + 1;
     
     H_1 = (H{k} == -1);
     H_2 = (H{k} == 2);
@@ -233,10 +234,42 @@ for k = 1: length(window_size_list)
     
 end
 
-xlabel('time');
-ylabel('window count');
+xlabel('Time');
+ylabel('Window Count');
 
 % Save the figure
-prediction_map_figure_name = sprintf("Prediction_Maps/PowerSystems/Prediction_Map_TT%d_SW%.2f_OR%.2f_SL%.5f_mu%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, mu);
-saveas(gcf, prediction_map_figure_name);
+prediction_map_windowcount_figure_name = sprintf("Prediction_Maps/PowerSystems/WindowCount/Prediction_Map_WindowCount_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_map_windowcount_figure_name);
+
+% Plot the Prediction Map with y-axis as: Window size
+figure_counter = figure_counter + 1;
+figure(figure_counter);
+hold on
+
+y_val = min(window_size_list);
+
+for k = 1: length(window_size_list)
+    
+    y_val = widow_size_list(k);
+    
+    H_1 = (H{k} == -1);
+    H_2 = (H{k} == 2);
+    H_0 = ~(H_1 | H_2);
+    
+    t_1 = time_EWS{k}(H_1);
+    t_2 = time_EWS{k}(H_2);
+    t_0 = time_EWS{k}(H_0);
+    
+    plot(t_1, y_val * ones(1, length(t_1)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
+    plot(t_2, y_val * ones(1, length(t_2)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'x', 'MarkerSize', 5, 'MarkerFaceColor', PS.Red1, 'MarkerEdgeColor' , PS.Red2);
+    plot(t_0, y_val * ones(1, length(t_0)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey1, 'MarkerEdgeColor' , PS.Grey2);
+    
+end
+
+xlabel('Time');
+ylabel('Window Size');
+
+% Save the figure
+prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/WindowSize/Prediction_Map_WindowSize_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_map_windowsize_figure_name);
 
