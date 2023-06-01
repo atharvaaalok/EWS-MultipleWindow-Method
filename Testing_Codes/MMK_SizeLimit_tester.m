@@ -19,7 +19,7 @@ for k = 1: length(gpu_use_list)
     % Set whether to use the GPU or not
     gpu_use = gpu_use_list(k);
 
-    n = 2000;
+    n = 900;
     significance_value_tau = 0.05;
     significance_value_ac = 0.05;
     print_bool = 0;
@@ -28,9 +28,16 @@ for k = 1: length(gpu_use_list)
     
     for i = 5: n
         % i
-        X = rand(1, i);
-        time = 1: i;
-        [tau, z, p, H, time_taken] = MMK(time, X, significance_value_tau, significance_value_ac, gpu_use, print_bool, time_taken);
+        time_i = 0;
+        N_loop = 1000;
+        for j = 1: N_loop
+            X = rand(1, i);
+            time = 1: i;
+            [tau, z, p, H, a] = MMK(time, X, significance_value_tau, significance_value_ac, gpu_use, print_bool);
+            time_i = time_i + a;
+        end
+        time_i = time_i / N_loop;
+        time_taken = [time_taken, time_i];
     end
     
     time_taken = time_taken';
@@ -58,7 +65,7 @@ plot(1: N, GPU_time, 'LineStyle', 'none', 'Marker', '.', 'MarkerFaceColor', PS.R
 plot(1: N, NoGPU_time, 'LineStyle', 'none', 'Marker', '.', 'MarkerFaceColor', PS.Blue2, 'MarkerEdgeColor', PS.Blue2);
 
 % Plot the variation for shorter array lengths to find where the GPU computation speed overtakes normal array computations
-limit_length = 1000;
+limit_length = 800;
 difference_time = GPU_time(1: limit_length) - NoGPU_time(1: limit_length);
 difference_time = difference_time';
 

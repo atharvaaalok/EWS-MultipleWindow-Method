@@ -1,4 +1,4 @@
-function [tau, z, p, H, median_time_taken] = MMK(t, X, alpha, alpha_ac, gpu_use, print_bool, median_time_taken)
+function [tau, z, p, H, median_time_taken] = MMK(t, X, alpha, alpha_ac, gpu_use, print_bool)
     
     %% FUNCTION INPUTS AND OUTPUTS
     
@@ -167,6 +167,7 @@ function [tau, z, p, H, median_time_taken] = MMK(t, X, alpha, alpha_ac, gpu_use,
         z = 0;
         p = 0.5;
         H = 2;
+        median_time_taken = 0;
         return
     end
     
@@ -217,13 +218,13 @@ function [tau, z, p, H, median_time_taken] = MMK(t, X, alpha, alpha_ac, gpu_use,
         fprintf("b = %f\n", b);
         fprintf("c = %f\n", c);
         fprintf("d = %f\n", d);
-        median_time_taken = [median_time_taken, d];
+        median_time_taken = d;
         fprintf("e = %f\n", e);
         fprintf("f = %f\n", f);
         fprintf("g = %f\n", g);
         fprintf("MMK_total_time = %f\n", MMK_total_time);
     else
-        median_time_taken = [median_time_taken, d];
+        median_time_taken = d;
     end
 
 
