@@ -286,7 +286,7 @@ y_val = min(window_size_list);
 
 for k = 1: length(window_size_list)
     
-    y_val = widow_size_list(k);
+    y_val = window_size_list(k);
     
     H_1 = (H{k} == -1);
     H_2 = (H{k} == 2);
