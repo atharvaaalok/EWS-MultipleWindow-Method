@@ -273,3 +273,39 @@ ylabel('Window Size');
 prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Size/Prediction_Map_WindowSize_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowsize_figure_name);
 
+% Plot the Prediction Map with y-axis as: Window size. Normalize the Window size and time values
+figure_counter = figure_counter + 1;
+figure(figure_counter);
+hold on
+
+% Normalize window size with largest window size, i.e. the one till bifurcation and normalize time with bifurcation time.
+largest_window_size;
+bifurcation_time;
+
+y_val = min(window_size_list) / largest_window_size;
+
+for k = 1: length(window_size_list)
+    
+    y_val = window_size_list(k) / largest_window_size;
+    
+    H_1 = (H{k} == -1);
+    H_2 = (H{k} == 2);
+    H_0 = ~(H_1 | H_2);
+    
+    t_1 = time_EWS{k}(H_1) / bifurcation_time;
+    t_2 = time_EWS{k}(H_2) / bifurcation_time;
+    t_0 = time_EWS{k}(H_0) / bifurcation_time;
+    
+    plot(t_1, y_val * ones(1, length(t_1)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
+    plot(t_2, y_val * ones(1, length(t_2)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'x', 'MarkerSize', 5, 'MarkerFaceColor', PS.Red1, 'MarkerEdgeColor' , PS.Red2);
+    plot(t_0, y_val * ones(1, length(t_0)), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey1, 'MarkerEdgeColor' , PS.Grey2);
+    
+end
+
+xlabel('Normalized Time');
+ylabel('Normalized Window Size');
+
+% Save the figure
+prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Size_Normalized/Prediction_Map_WindowSizeNormalized_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_map_windowsize_figure_name);
+
