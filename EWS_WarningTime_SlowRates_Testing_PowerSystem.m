@@ -131,12 +131,12 @@ fprintf('smallest window size in seconds \t= %fs\n', smallest_window_size * delt
 fprintf('smallest step size in seconds \t\t= %fs\n', smallest_step_size * delta_t);
 fprintf('\n\n');
 
-
+return
 %% FIND EWS TIMESERIES FOR EACH WINDOW-SIZE
 
 loop_start_tic = tic;
 
-for k = 1%: length(window_size_list)
+for k = 1: length(window_size_list)
 
     k
     
@@ -333,16 +333,23 @@ H_total = zeros(1, length(time_prediction_frac));
 for i = 1: length(time_prediction_frac)
 
     t = time_prediction_frac(i);
-    
+
+    % Time interval for doing averaging of prediction fraction - here taken to be a multiple of the smallest step size
+    % The largest value in diff(time_prediction_frac) = smallest_step_size
+    % Do only left side averaging otherwise we will end up using future data to determine current prediction fraction
+    n_steps_avg = 10;
+    t_interval = n_steps_avg * smallest_step_size * delta_t;
+
     % Check if this time is available for each EWS timeseries
     for k = 1: length(window_size_list)
-        
-        % If available then add H values to corresponding vectors
-        t_idx = find(time_EWS{k} == t);
-        if ~isempty(t_idx)
-            H_total(i) = H_total(i) + 1;
-            if H{k}(t_idx) == -1
-                H_favor(i) = H_favor(i) + 1;
+        for t_val = time_prediction_frac( (time_prediction_frac >= t - t_interval) & (time_prediction_frac <= t) )
+            % If available then add H values to corresponding vectors
+            t_idx = find(time_EWS{k} == t_val);
+            if ~isempty(t_idx)
+                H_total(i) = H_total(i) + 1;
+                if H{k}(t_idx) == -1
+                    H_favor(i) = H_favor(i) + 1;
+                end
             end
         end
 
@@ -358,7 +365,7 @@ figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
 
-plot(time_prediction_fraction, prediction_fraction, 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
+plot(time_prediction_frac, prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor' , PS.Grey5);
 
 xlabel('Time');
 ylabel('Prediction Fraction');
@@ -372,7 +379,7 @@ figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
 
-plot(time_prediction_fraction / bifurcation_time, prediction_fraction, 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
+plot(time_prediction_frac / bifurcation_time, prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor' , PS.Grey5);
 
 xlabel('Normalized Time');
 ylabel('Prediction Fraction');

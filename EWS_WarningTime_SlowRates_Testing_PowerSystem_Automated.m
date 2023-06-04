@@ -224,7 +224,7 @@ fprintf('smallest window size in seconds \t= %fs\n', smallest_window_size * delt
 fprintf('smallest step size in seconds \t\t= %fs\n', smallest_step_size * delta_t);
 fprintf('\n\n');
 
-
+return
 %% FIND EWS TIMESERIES FOR EACH WINDOW-SIZE
 
 loop_start_tic = tic;
@@ -300,9 +300,8 @@ loop_time = toc(loop_start_tic);
 fprintf("loop_time = %f\n", loop_time);
 
 
-%% PLOT THE VARIATION OF P-VALUES AND H
+%% PLOT THE PREDICTION MAP WITH Y-AXIS AS: WINDOW COUNT
 
-% Plot the Prediction Map with y-axis as: Window count
 figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
@@ -334,7 +333,9 @@ ylabel('Window Count');
 prediction_map_windowcount_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Count/Prediction_Map_WindowCount_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowcount_figure_name);
 
-% Plot the Prediction Map with y-axis as: Window size
+
+%% PLOT THE PREDICTION MAP WITH Y-AXIS AS: WINDOW SIZE
+
 figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
@@ -366,7 +367,9 @@ ylabel('Window Size');
 prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Size/Prediction_Map_WindowSize_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowsize_figure_name);
 
-% Plot the Prediction Map with y-axis as: Window size. Normalize the Window size and time values
+
+%% PLOT THE PREDICTION MAP WITH Y-AXIS AS NORMALIZED WINDOW SIZE
+
 figure_counter = figure_counter + 1;
 figure(figure_counter);
 hold on
@@ -401,6 +404,84 @@ ylabel('Normalized Window Size');
 % Save the figure
 prediction_map_windowsizenormalized_figure_name = sprintf("Prediction_Maps/PowerSystems/Window_Size_Normalized/Prediction_Map_WindowSizeNormalized_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
 saveas(gcf, prediction_map_windowsizenormalized_figure_name);
+
+
+%% PLOT THE PREDICTION FRACTION EVOLUTION WITH TIME: MAKE WITH TIME AND NORMALIZED TIME
+
+% Prediction fraction at time t = (Number of H values in favor of the trend) / (Total H values) both measured at time t
+
+% Find and sort the unique time values at which prediction fraction will be calculated
+time_prediction_frac = [];
+for k = 1: length(window_size_list)
+    time_prediction_frac = [time_prediction_frac, time_EWS{k}];
+end
+
+time_prediction_frac = unique(time_prediction_frac);
+
+% Create vectors to hold number of H values in favor and the total H values at time t
+H_favor = zeros(1, length(time_prediction_frac));
+H_total = zeros(1, length(time_prediction_frac));
+
+% Calculate values of the above variables at each instance
+for i = 1: length(time_prediction_frac)
+
+    t = time_prediction_frac(i);
+
+    % Time interval for doing averaging of prediction fraction - here taken to be a multiple of the smallest step size
+    % The largest value in diff(time_prediction_frac) = smallest_step_size
+    % Do only left side averaging otherwise we will end up using future data to determine current prediction fraction
+    n_steps_avg = 10;
+    t_interval = n_steps_avg * smallest_step_size * delta_t;
+
+    % Check if this time is available for each EWS timeseries
+    for k = 1: length(window_size_list)
+        for t_val = time_prediction_frac( (time_prediction_frac >= t - t_interval) & (time_prediction_frac <= t) )
+            % If available then add H values to corresponding vectors
+            t_idx = find(time_EWS{k} == t_val);
+            if ~isempty(t_idx)
+                H_total(i) = H_total(i) + 1;
+                if H{k}(t_idx) == -1
+                    H_favor(i) = H_favor(i) + 1;
+                end
+            end
+        end
+
+    end
+
+end
+
+% Calculate prediction fraction
+prediction_fraction = H_favor ./ H_total;
+
+% Plot the prediction fraction vs time
+figure_counter = figure_counter + 1;
+figure(figure_counter);
+hold on
+
+plot(time_prediction_frac, prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor' , PS.Grey5);
+
+xlabel('Time');
+ylabel('Prediction Fraction');
+
+% Save the figure
+prediction_frac_figure_name = sprintf("Prediction_Maps/PowerSystems/Prediction_Fraction/Prediction_Fraction_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_frac_figure_name);
+
+% Plot the prediction fraction vs normalized time
+figure_counter = figure_counter + 1;
+figure(figure_counter);
+hold on
+
+plot(time_prediction_frac / bifurcation_time, prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor' , PS.Grey5);
+
+xlabel('Normalized Time');
+ylabel('Prediction Fraction');
+
+% Save the figure
+prediction_frac_normalized_figure_name = sprintf("Prediction_Maps/PowerSystems/Prediction_Fraction_Normalized/Prediction_Fraction_Normalized_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_frac_normalized_figure_name);
+
+
 
 
 end
