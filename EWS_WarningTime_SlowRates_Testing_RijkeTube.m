@@ -342,5 +342,5 @@ xlabel('Normalized Time');
 ylabel('Normalized Window Size');
 
 % Save the figure
-prediction_map_windowsize_figure_name = sprintf("Prediction_Maps/RijkeTube/Window_Size_Normalized/Prediction_Map_WindowSizeNormalized_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
-saveas(gcf, prediction_map_windowsize_figure_name);
+prediction_map_windowsizenormalized_figure_name = sprintf("Prediction_Maps/RijkeTube/Window_Size_Normalized/Prediction_Map_WindowSizeNormalized_TT%d_SW%.2f_OR%.2f_SL%.5f_RPV%.4f.fig", time_transient, smallest_window_size, overlap_ratio, significance_value_tau, rate_of_parameter_variation);
+saveas(gcf, prediction_map_windowsizenormalized_figure_name);
