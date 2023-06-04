@@ -68,7 +68,7 @@ Parameter_list = [
 % Create table with appropriate variable headings
 Parameter_table = array2table(Parameter_list, "VariableNames", ["time_transient", "overlap_ratio", "smallest_step_size", "significance_value_tau"]);
 
-for i = 1: height(Parameter_value_table)
+for i = 1: height(Parameter_table)
 
     % Set the parameter values to be used for generating the prediction map
     time_transient = Parameter_table.time_transient(i);
