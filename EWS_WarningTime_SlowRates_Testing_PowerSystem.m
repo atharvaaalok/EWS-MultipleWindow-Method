@@ -131,7 +131,7 @@ fprintf('smallest window size in seconds \t= %fs\n', smallest_window_size * delt
 fprintf('smallest step size in seconds \t\t= %fs\n', smallest_step_size * delta_t);
 fprintf('\n\n');
 
-return
+
 %% FIND EWS TIMESERIES FOR EACH WINDOW-SIZE
 
 loop_start_tic = tic;
