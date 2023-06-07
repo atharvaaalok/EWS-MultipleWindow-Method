@@ -1,6 +1,99 @@
+%% AUTOMATING PREDICTION MAP GENERATION
+
+% This file automates the generation of prediction maps for different values of the following parameters:
+% 1) Time transient
+% 2) Overlap ratio
+% 3) Smallest step size
+% 4) Significance value for tau
+
+
 %% INITIAL SETUP
 
 clear; clc; close all;
+
+
+%% DEFINE ALL THE CONDITIONS FOR WHICH PREDICTION MAPS HAVE TO BE CREATED
+
+% The parameter value list is in the following order:
+% 1) Time Transient, 2) Overlap ratio, 3) Smallest step size, 4) Significance value for tau
+Parameter_list = [
+% OR - 80
+0, 0.80, 1500, 0.05;
+0, 0.80, 1500, 0.01;
+0, 0.80, 1500, 0.005;
+0, 0.80, 1500, 0.001;
+
+0, 0.80, 1000, 0.05;
+
+0, 0.80, 500, 0.05;
+0, 0.80, 500, 0.01;
+0, 0.80, 500, 0.005;
+0, 0.80, 500, 0.001;
+
+% OR - 90
+0, 0.90, 1500, 0.05;
+
+0, 0.90, 1000, 0.05;
+
+0, 0.90, 500, 0.05;
+
+% OR - 95
+0, 0.95, 1500, 0.05;
+
+0, 0.95, 1000, 0.05;
+
+0, 0.95, 500, 0.05;
+
+% OR - 99
+0, 0.99, 1500, 0.05;
+0, 0.99, 1500, 0.01;
+0, 0.99, 1500, 0.005;
+0, 0.99, 1500, 0.001;
+0, 0.99, 1500, 0.0001;
+0, 0.99, 1500, 0.00001;
+
+0, 0.99, 1000, 0.05;
+0, 0.99, 1000, 0.01;
+0, 0.99, 1000, 0.005;
+0, 0.99, 1000, 0.001;
+
+0, 0.99, 500, 0.05;
+0, 0.99, 500, 0.01;
+0, 0.99, 500, 0.005;
+0, 0.99, 500, 0.001;
+0, 0.99, 500, 0.0001;
+0, 0.99, 500, 0.00001;
+];
+
+% Create table with appropriate variable headings
+Parameter_table = array2table(Parameter_list, "VariableNames", ["time_transient", "overlap_ratio", "smallest_step_size", "significance_value_tau"]);
+
+for i = 1: height(Parameter_table)
+
+    % Set the parameter values to be used for generating the prediction map
+    time_transient = Parameter_table.time_transient(i);
+    overlap_ratio = Parameter_table.overlap_ratio(i);
+    smallest_step_size = Parameter_table.smallest_step_size(i);
+    significance_value_tau = Parameter_table.significance_value_tau(i);
+
+    % Generate Prediction maps for a given set of parameter values
+    EWS_WarningTime_SlowRates_Testing_PowerSystem_func(time_transient, overlap_ratio, smallest_step_size, significance_value_tau);
+
+    % Close all generated plots
+    close all;
+
+end
+
+
+
+
+
+%% CODE FOR THE PREDICITION MAP GENERATION FUNCTION
+
+function EWS_WarningTime_SlowRates_Testing_PowerSystem_func(time_transient, overlap_ratio, smallest_step_size, significance_value_tau)
+%% INITIAL SETUP
+
+% clear; clc; close all;
 PS = PLOT_STANDARDS();
 figure_counter = 0;
 
@@ -79,7 +172,7 @@ xlabel('Power (J)');
 ylabel('Pressure (Pa)');
 
 % Set transient time limit
-time_transient = 0;
+time_transient;
 
 fprintf('IMPORT DATA\n');
 fprintf('--------------------\n');
@@ -141,14 +234,14 @@ fprintf('\n\n');
 
 %% SET WINDOW DETAILS
 
-overlap_ratio = 99 / 100;
+overlap_ratio;
 max_overlap_ratio = 99 / 100;
 min_overlap_ratio = 80 / 100;
 
 largest_window_size = floor(bifurcation_time / delta_t);
 largest_step_size = floor(largest_window_size * (1 - overlap_ratio));
 
-smallest_step_size = 500;
+smallest_step_size;
 smallest_window_size = ceil(smallest_step_size / (1 - max_overlap_ratio));
 
 window_size_increment = smallest_window_size / 10;
@@ -215,7 +308,7 @@ for k = 1: length(window_size_list)
         AC_timeseries_ktau = EWS_details.AC_timeseries(1: j);
         
         % Set significance values
-        significance_value_tau = 0.05;
+        significance_value_tau;
         significance_value_ac = 0.05;
         gpu_shift_critical_size = 520;
 
@@ -425,3 +518,6 @@ prediction_frac_normalized_figure_name = sprintf("Prediction_Maps/RijkeTube/Pred
 saveas(gcf, prediction_frac_normalized_figure_name);
 
 
+
+
+end
