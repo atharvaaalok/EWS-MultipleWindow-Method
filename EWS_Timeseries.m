@@ -82,7 +82,7 @@ for i_window = 1: length(window_idx)
     rms_timeseries(i_window) = rms(timeseries_window_data);
 
     % Autocorrelation
-    acf = autocorr(timeseries_window_data);
+    acf = autocorr(timeseries_window_data, NumLags = AC_lag);
     AC_timeseries(i_window) = acf(AC_lag + 1);
 
 end
