@@ -12,8 +12,8 @@ DataFolder_path = 'G:/My Drive/EWS-MultipleWindow-Method/Data';
 System_name = 'PowerSystem';
 
 time_transient = 20;
-overlap_ratio = 90/100;
-smallest_step_size = 40000;
+overlap_ratio = 10/100;
+smallest_step_size = 4000;
 
 
 %% IMPORT DATA AND PREPROCESS
@@ -95,16 +95,20 @@ fprintf('\n\n');
 
 fprintf('EWS TIME SERIES\n');
 fprintf('--------------------\n');
-fprintf('Current window count/Total window count = ');
+fprintf('Total window count = %d\n', length(window_size_list));
+fprintf('Progress Bar:\n');
+progress_bar_length = 100;
+fprintf(['[', repmat('.', 1, progress_bar_length), ']', '\n\n']);
 
 figure();
 EWS_representative_window_count = 9;
-tiledlayout('flow', 'TileSpacing', 'compact', 'Padding', 'compact')
+tiledlayout('flow', 'TileSpacing', 'compact', 'Padding', 'compact');
+
 
 parfor k = 1: length(window_size_list)
     
     % Print the window count for which the loop runs
-    printed_length = fprintf('%d/%d', k, length(window_size_list));
+    
     
     % Set window size and step size to calculate the corresponding EWS timeseries
     window_size = window_size_list(k);
@@ -119,13 +123,13 @@ parfor k = 1: length(window_size_list)
         plot(EWS_details{k}.time_window_ends, EWS_details{k}.AC_timeseries);
         xlim([smallest_window_size * delta_t, time(end)]);
     end
-
-    fprintf(repmat('\b', 1, printed_length));
+    
+    progress_counter = floor( (k / length(window_size_list)) * progress_bar_length );
+    fprintf([repmat('\b', 1, progress_bar_length + 4), '[', repmat('#', 1, progress_counter), repmat('.', 1, progress_bar_length - progress_counter), ']', '\n\n']);
 
 end
 
-fprintf('%d/%d\n', length(window_size_list), length(window_size_list));
-fprintf('\n\n');
+fprintf([repmat('\b', 1, progress_bar_length + 2), '[', repmat('#', 1, progress_bar_length), ']', '\n\n']);
 
 
 
