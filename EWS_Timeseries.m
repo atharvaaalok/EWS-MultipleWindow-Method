@@ -7,7 +7,7 @@ tic
 % Convert vector to GPU array for much faster computations
 
 gpu_available = canUseGPU();
-if gpu_available == 1
+if gpu_available == 0
     time = gpuArray(time);
     state_timeseries = gpuArray(state_timeseries);
 end
@@ -26,12 +26,12 @@ time = time(1: end - tail_data_remove_length);
 state_timeseries = state_timeseries(1: end - tail_data_remove_length);
 parameter_variation = parameter_variation(1: end - tail_data_remove_length);
 
-fprintf('REMOVE TAIL DATA\n');
-fprintf('--------------------\n');
-fprintf('data_total_length \t\t\t\t\t= %d\n', data_total_length);
-fprintf('tail_data_remove_length \t\t\t= %d\n', tail_data_remove_length);
-fprintf('tail_data_remove_length in seconds \t= %.3f s\n', tail_data_remove_length * delta_t);
-fprintf('\n\n');
+% fprintf('REMOVE TAIL DATA\n');
+% fprintf('--------------------\n');
+% fprintf('data_total_length \t\t\t\t\t= %d\n', data_total_length);
+% fprintf('tail_data_remove_length \t\t\t= %d\n', tail_data_remove_length);
+% fprintf('tail_data_remove_length in seconds \t= %.3f s\n', tail_data_remove_length * delta_t);
+% fprintf('\n\n');
 
 b = toc;
 
@@ -47,12 +47,12 @@ time_window_ends_idx = window_idx(1:end) + window_size - 1;
 time_window_ends = time(time_window_ends_idx);
 parameter_window_ends = parameter_variation(time_window_ends_idx);
 
-fprintf('SET WINDOW INDICES AND TIME VECTOR OF WINDOW ENDS\n');
-fprintf('--------------------\n');
-fprintf('data_total_length - window_idx(end) \t= %d\n', data_total_length - window_idx(end));
-fprintf('time_window_ends(end) \t\t\t\t\t= %.3f s\n', time_window_ends(end));
-fprintf('time(end) \t\t\t\t\t\t\t\t= %.3f s\n', time(end));
-fprintf('\n\n');
+% fprintf('SET WINDOW INDICES AND TIME VECTOR OF WINDOW ENDS\n');
+% fprintf('--------------------\n');
+% fprintf('data_total_length - window_idx(end) \t= %d\n', data_total_length - window_idx(end));
+% fprintf('time_window_ends(end) \t\t\t\t\t= %.3f s\n', time_window_ends(end));
+% fprintf('time(end) \t\t\t\t\t\t\t\t= %.3f s\n', time(end));
+% fprintf('\n\n');
 
 c = toc;
 
@@ -67,6 +67,8 @@ rms_timeseries = zeros(1, length(time_window_ends));
 % Autocorrelation
 AC_lag = 1;
 AC_timeseries = zeros(1, length(time_window_ends));
+
+% Note: The delta_t input to the function is useful when AC_lag is to be set in seconds
 
 d = toc;
 
@@ -107,12 +109,12 @@ parameter_max_rate = parameter_vector_rate(max_rate_rms_state_idx);
 
 rate_transition_time = time_max_rate;
 
-fprintf('RATE OF CHANGE OF RMS\n');
-fprintf('--------------------\n');
-fprintf('max_rate_rms_pressure \t= %.2f Pa/s\n', max_rate_rms_state);
-fprintf('time_max_rate \t\t\t= %.2f s\n', time_max_rate);
-fprintf('parameter_max_rate \t\t= %.2f\n', parameter_max_rate);
-fprintf('\n\n');
+% fprintf('RATE OF CHANGE OF RMS\n');
+% fprintf('--------------------\n');
+% fprintf('max_rate_rms_pressure \t= %.2f Pa/s\n', max_rate_rms_state);
+% fprintf('time_max_rate \t\t\t= %.2f s\n', time_max_rate);
+% fprintf('parameter_max_rate \t\t= %.2f\n', parameter_max_rate);
+% fprintf('\n\n');
 
 f = toc;
 
@@ -160,14 +162,14 @@ g = toc;
 
 TS_gen_total_time = a + b + c + d + e + f + g;
 
-fprintf("a = %f\n", a);
-fprintf("b = %f\n", b);
-fprintf("c = %f\n", c);
-fprintf("d = %f\n", d);
-fprintf("e = %f\n", e);
-fprintf("f = %f\n", f);
-fprintf("g = %f\n", g);
-fprintf("TS_gen_total_time = %f\n", TS_gen_total_time);
+% fprintf("a = %f\n", a);
+% fprintf("b = %f\n", b);
+% fprintf("c = %f\n", c);
+% fprintf("d = %f\n", d);
+% fprintf("e = %f\n", e);
+% fprintf("f = %f\n", f);
+% fprintf("g = %f\n", g);
+% fprintf("TS_gen_total_time = %f\n", TS_gen_total_time);
 
 
 end
