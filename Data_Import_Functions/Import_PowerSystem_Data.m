@@ -63,7 +63,7 @@ function Data = Import_PowerSystem_Data(DataFolder_path)
     
     Data.parameter_bifurcation = parameter_bifurcation;
     Data.rate_of_parameter_variation = mu;
-    Data.bifurcation_time = (parameter_bifurcation - Data.parameter_variation(1)) / rate_of_parameter_variation;
+    Data.bifurcation_time = (parameter_bifurcation - Data.parameter_variation(1)) / Data.rate_of_parameter_variation;
     
     Data.sampling_frequency = sampling_rate;
     Data.delta_t = delta_t;
