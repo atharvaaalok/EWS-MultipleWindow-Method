@@ -149,14 +149,18 @@ fprintf('--------------------\n');
 
 Progress_Bar_func('begin', total_window_count);
 
+EWS_timeseries_lengths = zeros(1, total_window_count);
+
 parfor k = 1: total_window_count
 
     % Update progress bar each time a new loop starts
     send(progress_bar_data_queue, 'ongoing');
 
+    n_ktau = length(EWS_details{k}.time_window_ends);
+    EWS_timeseries_lengths(k) = n_ktau;
+
     % Generate Kendall-tau value and significance level time series. Calculate for increasing amounts of EWS time series data.
     % Preallocate [tau, z, p, H] vectors for increasing amounts EWS time series data
-    n_ktau = length(EWS_details{k}.time_window_ends);
     time_EWS{k} = EWS_details{k}.time_window_ends;
     tau{k} = zeros(1, n_ktau);
     z{k} = zeros(1, n_ktau);
@@ -202,6 +206,45 @@ end
 % Normalize window size with largest window size, i.e. the one till bifurcation.
 % Normalize time with bifurcation time.
 
+tic_method_1_timer_1 = tic;
+% METHOD - 1
+% Join time series
+my_time = horzcat(time_EWS{:});
+my_H = horzcat(H{:});
+
+y_val = zeros(1, sum(EWS_timeseries_lengths));
+idx_list = [0, cumsum(EWS_timeseries_lengths)];
+for k = 1: total_window_count
+    y_val(idx_list(k)+1: idx_list(k+1)) = window_size_list(k) / largest_window_size;
+end
+
+tic_sorting = tic;
+% Sort the arrays
+[my_time, time_order] = sort(my_time);
+my_H = my_H(time_order);
+y_val = y_val(time_order);
+time_sorting = toc(tic_sorting);
+
+my_H_1 = (my_H == H_val_to_match);
+my_H_2 = (my_H == 2);
+my_H_0 = ~(H_1 | H_2);
+
+% Plot the prediction map
+figure('Name', 'Prediction_Map_1');
+
+plot(my_time(my_H_1), y_val(my_H_1), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
+plot(my_time(my_H_2), y_val(my_H_2), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'x', 'MarkerSize', 5, 'MarkerFaceColor', PS.Red1, 'MarkerEdgeColor' , PS.Red2);
+plot(my_time(my_H_0), y_val(my_H_0), 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey1, 'MarkerEdgeColor' , PS.Grey2);
+
+xlabel('Normalized Time');
+ylabel('Normalized Window Size');
+
+time_method_1_timer_1 = toc(tic_method_1_timer_1);
+fprintf('time_method_1_timer_1 = %f\n', time_method_1_timer_1);
+
+
+tic_method_2_timer_1 = tic;
+% METHOD - 2
 % Preallocate cell arrays
 t_1 = cell(1, total_window_count); t_2 = t_1; t_0 = t1;
 y_val_1 = cell(1, total_window_count); y_val_2 = y_val_1; y_val_0 = y_val_1;
@@ -235,7 +278,7 @@ y_val_2 = horzcat(y_val_2{:});
 y_val_0 = horzcat(y_val_0{:});
 
 % Plot the prediction map
-figure('Name', 'Prediction_Map');
+figure('Name', 'Prediction_Map_2');
 
 plot(t_1, y_val_1, 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSize', 5, 'MarkerFaceColor', PS.Grey4, 'MarkerEdgeColor' , PS.Grey5);
 plot(t_2, y_val_2, 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'x', 'MarkerSize', 5, 'MarkerFaceColor', PS.Red1, 'MarkerEdgeColor' , PS.Red2);
@@ -244,14 +287,49 @@ plot(t_0, y_val_0, 'LineStyle', 'none', 'LineWidth', 1, 'Marker', 'o', 'MarkerSi
 xlabel('Normalized Time');
 ylabel('Normalized Window Size');
 
+time_method_2_timer_1 = toc(tic_method_2_timer_1);
+fprintf('time_method_2_timer_1 = %f\n\n', time_method_2_timer_1);
+
 
 %% PLOT PREDICTION FRACTION FROM SEARCHING ACTUAL DATA
 
 % Prediction fraction at time t = (Number of H values in favor of the trend) / (Total H values) where both are measured at time t
 
+
+
+
+tic_method_1_timer_2 = tic;
 % Find and sort the unique time values at which prediction fraction will be calculated
-time_prediction_frac = unique(horzcat(time_EWS{:}));
-% THIS Can be done faster.
+time_prediction_frac = unique(my_time);
+% Method - 1
+for i = 1: length(time_prediction_frac)
+
+    t = time_prediction_frac(i);
+
+    % Time interval for doing averaging of prediction fraction - here taken to be a multiple of the smallest step size
+    % The largest value in diff(time_prediction_frac) = smallest_step_size
+    % Do only left side averaging otherwise we will end up using future data to determine current prediction fraction
+    n_steps_avg = 10;
+    t_interval = n_steps_avg * smallest_step_size * delta_t;
+    
+    t_val_idx = ( (my_time >= (t - t_interval)) & (my_time <= t) );
+    H_taken = my_H(t_val_idx);
+    H_total(i) = length(H_taken);
+    H_favor(i) = sum(H_taken == H_val_to_match);
+
+end
+
+% Calculate prediction fraction
+prediction_fraction_1 = H_favor ./ H_total;
+
+time_method_1_timer_2 = toc(tic_method_1_timer_2);
+fprintf('time_method_1_timer_2 = %f\n', time_method_1_timer_2);
+
+
+tic_method_2_timer_2 = tic;
+% Find and sort the unique time values at which prediction fraction will be calculated
+time_prediction_frac = unique(time_EWS{:});
+% Method - 2
 
 % Preallocate vectors to hold number of H values in favor and the total H values at time t
 H_favor = zeros(1, length(time_prediction_frac));
@@ -288,6 +366,11 @@ end
 % Calculate prediction fraction
 prediction_fraction = H_favor ./ H_total;
 
+time_method_2_timer_2 = toc(tic_method_2_timer_2);
+fprintf('time_method_2_timer_2 = %f\n\n', time_method_2_timer_2);
+
+
+
 figure('Name', 'Prediction_Fraction_SearchMethod');
 % Plot the prediction fraction vs normalized time
 plot(time_prediction_frac / bifurcation_time, prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor' , PS.Grey5);
@@ -297,11 +380,13 @@ ylabel('Prediction Fraction');
 
 
 
+
+fprintf('time_sorting = %f\n', time_sorting);
+
+
 total_time_of_running = toc(tic_beginning);
+fprintf('total_time_of_running = %f\n\n', total_time_of_running);
 
-fprintf('total_time_of_running = %f', total_time_of_running);
-
-return
 
 
 %% SAVE ALL FIGURES
@@ -328,6 +413,8 @@ for i = 1: total_figure_count
 
 end
 
+
+return
 
 %% PLOT PREDICTION FRACTION FROM IMAGE OF PREDICTION MAP
 

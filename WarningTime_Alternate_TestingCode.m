@@ -301,7 +301,6 @@ total_time_of_running = toc(tic_beginning);
 
 fprintf('total_time_of_running = %f', total_time_of_running);
 
-return
 
 
 %% SAVE ALL FIGURES
@@ -328,6 +327,8 @@ for i = 1: total_figure_count
 
 end
 
+
+return
 
 %% PLOT PREDICTION FRACTION FROM IMAGE OF PREDICTION MAP
 
