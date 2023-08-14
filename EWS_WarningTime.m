@@ -8,7 +8,8 @@ tic_beginning = tic;
 
 %% SET VALUES
 
-DataFolder_path = 'G:/My Drive/EWS-MultipleWindow-Method/Data';
+% DataFolder_path = 'G:/My Drive/EWS-MultipleWindow-Method/Data';
+DataFolder_path = '../Data';
 
 System_name = 'PowerSystem';
 
@@ -246,7 +247,7 @@ fprintf('time_method_1_timer_1 = %f\n', time_method_1_timer_1);
 tic_method_2_timer_1 = tic;
 % METHOD - 2
 % Preallocate cell arrays
-t_1 = cell(1, total_window_count); t_2 = t_1; t_0 = t1;
+t_1 = cell(1, total_window_count); t_2 = t_1; t_0 = t_1;
 y_val_1 = cell(1, total_window_count); y_val_2 = y_val_1; y_val_0 = y_val_1;
 
 for k = 1: total_window_count
@@ -262,9 +263,9 @@ for k = 1: total_window_count
     t_2{k} = time_EWS{k}(H_2) / bifurcation_time;
     t_0{k} = time_EWS{k}(H_0) / bifurcation_time;
 
-    y_val_1{k} = y_val * ones(1, length(t_1));
-    y_val_2{k} = y_val * ones(1, length(t_2));
-    y_val_0{k} = y_val * ones(1, length(t_0));
+    y_val_1{k} = y_val * ones(1, length(t_1{k}));
+    y_val_2{k} = y_val * ones(1, length(t_2{k}));
+    y_val_0{k} = y_val * ones(1, length(t_0{k}));
     
 end
 
