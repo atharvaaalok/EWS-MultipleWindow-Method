@@ -410,7 +410,7 @@ for i = 1: total_figure_count
 
     % If figure is prediction map save it as bmp
     if strcmp(fig_id.Name, 'Prediction_Map_2')
-        exportgraphics(fig_id, sprintf('%s/%s.bmp', figure_location, fig_id.Name), 'Resolution', 1200);
+        exportgraphics(fig_id, sprintf('%s/%s.png', figure_location, fig_id.Name), 'Resolution', 1200);
     end
 
 end
