@@ -329,7 +329,7 @@ fprintf('time_method_1_timer_2 = %f\n', time_method_1_timer_2);
 
 tic_method_2_timer_2 = tic;
 % Find and sort the unique time values at which prediction fraction will be calculated
-time_prediction_frac = unique(time_EWS{:});
+time_prediction_frac = unique(horzcat(time_EWS{:}));
 % Method - 2
 
 % Preallocate vectors to hold number of H values in favor and the total H values at time t
