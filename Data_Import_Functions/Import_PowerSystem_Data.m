@@ -34,7 +34,7 @@ function Data = Import_PowerSystem_Data(DataFolder_path)
     PmSol = YSol(:, 5);
     
     % Plot omega timeseries
-    figure();
+    figure('Name', 'Timeseries_Original');
     hold on
     plot(tSol, omegaSol);
     xlabel('Time');

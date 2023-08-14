@@ -51,8 +51,18 @@ color_1 = flat_mat(idx_1, :);
 color_2 = flat_mat(idx_2, :);
 color_3 = flat_mat(idx_3, :);
 
+% color_1 = flat_mat(idx_1, :);
+% color_2 = [93, 173, 226]; % No portion
+% color_2 = flat_mat(idx_2, :);
+% % color_3 = flat_mat(idx_3, :);
+% color_3 = [247, 220, 111 ]; % Yes portion
+
+my_color_1 = flat_mat(idx_1, :);
+my_color_2 = [207, 204, 63]; % Yes Portion
+my_color_3 = [252, 243, 207]; % No Portion
+
 % Add blue in place of all other colors
-color_4 = [133, 193, 233];
+color_4 = my_color_3;
 
 
 new_img = zeros(height(my_mat), width(my_mat), 3);
@@ -63,13 +73,13 @@ for i = 1: height(new_img)
         counter = counter + 1;
         
         if sum(flat_mat(counter, :) == color_1) == 3
-            new_img(i, j, :) = color_1;
+            new_img(i, j, :) = my_color_1;
         elseif sum(flat_mat(counter, :) == color_2) == 3
 %             disp("color 2");
-            new_img(i, j, :) = color_2;
+            new_img(i, j, :) = my_color_2;
         elseif sum(flat_mat(counter, :) == color_3) == 3
 %             disp("color 3");
-            new_img(i, j, :) = color_3;
+            new_img(i, j, :) = my_color_3;
         else
             new_img(i, j, :) = color_4;
         end
@@ -85,30 +95,30 @@ new_img = uint8(new_img);
 imwrite(new_img, "Urja.bmp");
 
 
-prediction_fraction = ones(1, width(new_img));
-
-for i = 1: width(new_img)
-    grey_counter = 0;
-    total_counter = 0;
-    for j = 1: height(new_img)
-        new_img_color_val = new_img(j, i, :);
-        new_img_color_val = new_img_color_val(:);
-        new_img_color_val = new_img_color_val';
-        if sum(new_img_color_val == color_1) ~= 3
-            total_counter = total_counter + 1;
-            if sum(new_img_color_val == color_2) == 3
-%                 disp("here 2");
-                grey_counter = grey_counter + 1;
-            end
-        end
-    end
-
-    prediction_fraction(i) = grey_counter / total_counter;
-
-end
-
-
-figure(1)
-plot(1: length(prediction_fraction), prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor', PS.Grey5);
-
-saveas(gca, "Pred_factor.png");
+% prediction_fraction = ones(1, width(new_img));
+% 
+% for i = 1: width(new_img)
+%     grey_counter = 0;
+%     total_counter = 0;
+%     for j = 1: height(new_img)
+%         new_img_color_val = new_img(j, i, :);
+%         new_img_color_val = new_img_color_val(:);
+%         new_img_color_val = new_img_color_val';
+%         if sum(new_img_color_val == color_1) ~= 3
+%             total_counter = total_counter + 1;
+%             if sum(new_img_color_val == color_2) == 3
+% %                 disp("here 2");
+%                 grey_counter = grey_counter + 1;
+%             end
+%         end
+%     end
+% 
+%     prediction_fraction(i) = grey_counter / total_counter;
+% 
+% end
+% 
+% 
+% figure(1)
+% plot(1: length(prediction_fraction), prediction_fraction, 'LineStyle', 'none', 'Marker', '.', 'MarkerSize', 5, 'MarkerEdgeColor', PS.Grey5);
+% 
+% saveas(gca, "Pred_factor.png");
