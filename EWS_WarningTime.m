@@ -40,6 +40,7 @@ state_timeseries = Data.state_timeseries;
 
 parameter_bifurcation = Data.parameter_bifurcation;
 bifurcation_time = Data.bifurcation_time;
+rate_of_parameter_variation = Data.rate_of_parameter_variation;
 
 time_transient;
 sampling_frequency = Data.sampling_frequency;

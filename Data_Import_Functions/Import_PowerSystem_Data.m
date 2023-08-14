@@ -62,7 +62,7 @@ function Data = Import_PowerSystem_Data(DataFolder_path)
     Data.state_timeseries = omegaSol;
     
     Data.parameter_bifurcation = parameter_bifurcation;
-    rate_of_parameter_variation = mu;
+    Data.rate_of_parameter_variation = mu;
     Data.bifurcation_time = (parameter_bifurcation - Data.parameter_variation(1)) / rate_of_parameter_variation;
     
     Data.sampling_frequency = sampling_rate;
