@@ -7,7 +7,7 @@ tic
 % Convert vector to GPU array for much faster computations
 
 gpu_available = canUseGPU();
-if gpu_available == 0
+if gpu_available == 1
     time = gpuArray(time);
     state_timeseries = gpuArray(state_timeseries);
 end
