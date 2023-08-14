@@ -227,7 +227,7 @@ time_sorting = toc(tic_sorting);
 
 my_H_1 = (my_H == H_val_to_match);
 my_H_2 = (my_H == 2);
-my_H_0 = ~(H_1 | H_2);
+my_H_0 = ~(my_H_1 | my_H_2);
 
 % Plot the prediction map
 figure('Name', 'Prediction_Map_1');
