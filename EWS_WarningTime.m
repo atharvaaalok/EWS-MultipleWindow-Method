@@ -213,12 +213,7 @@ tic_method_1_timer_1 = tic;
 % Join time series
 my_time = horzcat(time_EWS{:});
 my_H = horzcat(H{:});
-
-y_val = zeros(1, sum(EWS_timeseries_lengths));
-idx_list = [0, cumsum(EWS_timeseries_lengths)];
-for k = 1: total_window_count
-    y_val(idx_list(k)+1: idx_list(k+1)) = window_size_list(k) / largest_window_size;
-end
+y_val = repelem((window_size_list / largest_window_size), EWS_timeseries_lengths);
 
 tic_sorting = tic;
 % Sort the arrays
