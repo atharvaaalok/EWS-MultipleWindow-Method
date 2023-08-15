@@ -405,7 +405,8 @@ for i = 1: total_figure_count
 
     % If figure is prediction map save it as bmp
     if strcmp(fig_id.Name, 'Prediction_Map_2')
-        exportgraphics(fig_id, sprintf('%s/%s.png', figure_location, fig_id.Name), 'Resolution', 1200);
+        pred_map_image_file_location = sprintf('%s/%s.png', figure_location, fig_id.Name);
+        exportgraphics(fig_id, pred_map_image_file_location, 'Resolution', 1200);
     end
 
 end
@@ -415,8 +416,10 @@ return
 
 %% PLOT PREDICTION FRACTION FROM IMAGE OF PREDICTION MAP
 
-figure('Name', 'Prediction_Fraction_ImageMethod');
+Colors_used.color_yes = [];
+Colors_used.color_no = [];
 
+prediction_fraction_from_Image = PredictionFraction_from_Image_func(pred_map_image_file_location, Colors_used);
 
 
 
