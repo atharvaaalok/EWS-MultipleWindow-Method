@@ -1,10 +1,12 @@
 %% INITIAL SETUP
 
 clear; clc; close all;
-PS = PLOT_STANDARDS();
 addpath('Data_Import_Functions', 'Other_Useful_Functions');
+% Import useful data and method parameters
+Useful_Data_for_Method()
 
 tic_beginning = tic;
+
 
 %% SET VALUES
 
@@ -14,15 +16,14 @@ DataFolder_path = '../Data';
 System_name = 'PowerSystem';
 
 time_transient = 20;
-overlap_ratio = 80/100;
-smallest_step_size = 20000;
+overlap_ratio = 99/100;
+smallest_step_size = 5000;
 
 % Set significance values
 significance_value_tau = 0.05;
 gpu_shift_critical_size = 520;
 
 H_val_to_match = -1;
-
 
 % Define function to call to print parfor progress bar
 progress_bar_data_queue = parallel.pool.DataQueue;
@@ -49,11 +50,10 @@ delta_t = Data.delta_t;
 % Remove Data struct to save space
 clearvars Data
 
-% Remove initial transients and plot new time series
-selection_transient = time > time_transient;
-time = time(selection_transient);
-parameter_variation = parameter_variation(selection_transient);
-state_timeseries = state_timeseries(selection_transient);
+transient_select_num = find(time >= time_transient, 1);
+time = time(transient_select_num: end);
+parameter_variation = parameter_variation(transient_select_num: end);
+state_timeseries = state_timeseries(transient_select_num: end);
 
 % Plot transient removed state timeseries
 figure('Name', 'Timeseries_TransientRemoved');
@@ -79,7 +79,7 @@ fprintf('sampling_frequency     = %f Hz\n', sampling_frequency);
 fprintf('delta_t                = %f s\n', delta_t);
 fprintf('\n\n');
 
-
+return
 %% SET WINDOW DETAILS
 
 overlap_ratio;
@@ -116,7 +116,7 @@ fprintf('--------------------\n');
 % Display progress bar and set progress to 0
 Progress_Bar_func('begin', total_window_count);
 
-parfor k = 1: total_window_count
+for k = 1: total_window_count
 
     % Update progress bar each time a new loop starts
     send(progress_bar_data_queue, 'ongoing');
@@ -142,6 +142,7 @@ for k = floor(linspace(1, total_window_count, EWS_representative_window_count) )
     plot(EWS_details{k}.time_window_ends, EWS_details{k}.AC_timeseries);
     xlim([smallest_window_size * delta_t, time(end)]);
 end
+
 
 
 %% EXAMINING SIGNIFICANCE OF EWS TIME SERIES TRENDS
@@ -208,12 +209,12 @@ end
 % Normalize window size with largest window size, i.e. the one till bifurcation.
 % Normalize time with bifurcation time.
 
-tic_method_1_timer_1 = tic;
-% METHOD - 1
-% Join time series
 my_time = horzcat(time_EWS{:});
 my_H = horzcat(H{:});
 y_val = repelem((window_size_list / largest_window_size), EWS_timeseries_lengths);
+tic_method_1_timer_1 = tic;
+% METHOD - 1
+% Join time series
 
 tic_sorting = tic;
 % Sort the arrays
