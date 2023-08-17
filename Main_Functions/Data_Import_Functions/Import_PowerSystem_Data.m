@@ -2,8 +2,8 @@ function Data = Import_PowerSystem_Data(DataFolder_path)
     %% IMPORT DATA
     
     delta0 = 1;
-    x0 = cos(delta0);
-    y0 = sin(delta0);
+    % x0 = cos(delta0);
+    % y0 = sin(delta0);
     omega0 = 0.9;
     E0 = 0.8;
     Pm0 = .5;
@@ -14,24 +14,24 @@ function Data = Import_PowerSystem_Data(DataFolder_path)
     delta_t = 1 / (sampling_rate - 1);     % the actual formula should be 1 / (sampling_rate - 1), but I use this as an approximation as integer multiple (5000) makes 1 second.
     t1 = 0;
     
-    Y0 = [x0; y0; omega0; E0; Pm0];
+    % Y0 = [x0; y0; omega0; E0; Pm0];
     
     % mu_list = 0.001:0.0005:0.008;
     % t2_list = 300 * ones(1, length(mu_list));
     
-    mu = [0.0001];
+    mu = 0.0001;
     t2 = 2000;
     
     filename = sprintf('NoiseOmega5_mu%.4f_delta%.2f_omega%.2f_E%.2f_Pm%.4f_t%.2f_deltaT%.5f_ConstantTimeStep.mat', mu, delta0, omega0, E0, Pm0, t2, delta_t);
     file_path = sprintf('%s/PowerSystem/Noise5/%s', DataFolder_path, filename);
-    load(file_path);
+    load(file_path, 'tSol', 'YSol');
     
-    tSol;
-    xSol = YSol(:, 1);
-    ySol = YSol(:, 2);
-    omegaSol = YSol(:, 3);
-    ESol = YSol(:, 4);
-    PmSol = YSol(:, 5);
+    % tSol;
+    % xSol = YSol(:, 1)';
+    % ySol = YSol(:, 2)';
+    omegaSol = YSol(:, 3)';
+    % ESol = YSol(:, 4)';
+    PmSol = YSol(:, 5)';
     
     % Plot omega timeseries
     figure('Name', 'Timeseries_Original');

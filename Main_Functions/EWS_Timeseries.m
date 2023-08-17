@@ -42,7 +42,7 @@ tic
 
 window_idx = 1: window_step: (length(time) - window_size + 1);
 
-time_window_ends_idx = window_idx(1:end) + window_size - 1;
+time_window_ends_idx = window_idx + window_size - 1;
 
 time_window_ends = time(time_window_ends_idx);
 parameter_window_ends = parameter_variation(time_window_ends_idx);
