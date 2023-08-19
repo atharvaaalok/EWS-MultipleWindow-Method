@@ -120,7 +120,7 @@ fprintf('\n\n');
 fprintf('Time Taken: Window Details = %f\n\n', toc(tic_window_details));
 
 
-%% FIND EWS TIMESERIES FOR EACH WINDOW SIZE
+%% FIND EWS TIMESERIES FOR EACH WINDOW SIZE AND PLOT REPRESENTATIVES
 
 tic_EWS_timeseries = tic;
 
@@ -130,6 +130,10 @@ fprintf('--------------------\n');
 % Display progress bar and set progress to 0
 Progress_Bar_func('begin', total_window_count);
 
+% Preallocate cell array for storing EWS_timeseries
+EWS_timeseries = cell(1, total_window_count);
+time_EWS = cell(1, total_window_count);
+
 for k = 1: total_window_count
 
     % Set window size and step size to calculate the corresponding EWS timeseries
@@ -137,7 +141,7 @@ for k = 1: total_window_count
     window_step = step_size_list(k);
 
     % Generate EWS timeseries for particular window size
-    [EWS_details{k}, RateRMS_details{k}] = EWS_Timeseries(time, state_timeseries, parameter_variation, delta_t, window_size, window_step);
+    [EWS_timeseries{k}, time_EWS{k}] = EWS_Timeseries(time, state_timeseries, window_size, window_step, chosen_EWS);
 
     % Update progress bar each time a new loop starts
     send(progress_bar_data_queue, 'ongoing');
@@ -153,14 +157,55 @@ tiledlayout('flow', 'TileSpacing', 'compact', 'Padding', 'compact');
 
 for k = floor(linspace(1, total_window_count, EWS_representative_window_count) )
     nexttile;
+    plot(time_EWS{k}, EWS_timeseries{k});
+    xlim([smallest_window_size * delta_t, time(end)]);
+end
+
+fprintf('Time Taken: EWS Time Series = %f\n\n', toc(tic_EWS_timeseries));
+
+
+%% FIND EWS TIMESERIES FOR EACH WINDOW SIZE
+
+tic_EWS_timeseries_OLD = tic;
+
+fprintf('EWS TIME SERIES\n');
+fprintf('--------------------\n');
+
+% Display progress bar and set progress to 0
+Progress_Bar_func('begin', total_window_count);
+
+EWS_details = cell(1, total_window_count);
+
+for k = 1: total_window_count
+
+    % Set window size and step size to calculate the corresponding EWS timeseries
+    window_size = window_size_list(k);
+    window_step = step_size_list(k);
+
+    % Generate EWS timeseries for particular window size
+    EWS_details = EWS_Timeseries_OLD(time, state_timeseries, parameter_variation, delta_t, window_size, window_step);
+
+    % Update progress bar each time a new loop starts
+    send(progress_bar_data_queue, 'ongoing');
+    
+end
+
+Progress_Bar_func('ended');
+
+% Plot figure that shows some representative EWS time series evenly spread across window sizes
+figure('Name', 'EWS_Representative_OLD');
+EWS_representative_window_count = 9;
+tiledlayout('flow', 'TileSpacing', 'compact', 'Padding', 'compact');
+
+for k = floor(linspace(1, total_window_count, EWS_representative_window_count) )
+    nexttile;
     plot(EWS_details{k}.time_window_ends, EWS_details{k}.AC_timeseries);
     xlim([smallest_window_size * delta_t, time(end)]);
 end
 
-fprintf('Time Taken: Window Details = %f\n\n', toc(tic_EWS_timeseries));
+fprintf('Time Taken: EWS Time Series OLD = %f\n\n', toc(tic_EWS_timeseries_OLD));
 
 return
-
 
 %% EXAMINING SIGNIFICANCE OF EWS TIME SERIES TRENDS
 
