@@ -16,18 +16,18 @@ function kr_timeseries = rolling_kurtosis(x, window_size, window_step)
         M2_list(n) = M2_list(n - 1) + delta * delta * (n - 1) / n;
     end
     
-    % Get the indices at which to calculate skewness values.
+    % Get the indices at which to calculate kurtosis values
     window_ends_idx = window_size: window_step: length(x);
     
-    % Preallocate array for storing skewness time series
+    % Preallocate array for storing kurtosis time series
     kr_timeseries = zeros(1, length(window_ends_idx));
 
-    % Generate skewness time series
+    % Generate kurtosis time series
     for i = 1: length(window_ends_idx)
         idx = window_ends_idx(i);
         M2 = M2_list(idx) - M2_list(idx - window_size + 1);
         M4 = M4_list(idx) - M4_list(idx - window_size + 1);
-        % Calculate skewness for the window
+        % Calculate kurtosis for the window
         kr_timeseries(i) = (M4 * window_size) / (M2 * M2);
     end
 

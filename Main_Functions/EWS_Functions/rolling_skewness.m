@@ -14,7 +14,7 @@ function sk_timeseries = rolling_skewness(x, window_size, window_step)
         M2_list(n) = M2_list(n - 1) + delta * delta * (n - 1) / n;
     end
     
-    % Get the indices at which to calculate skewness values.
+    % Get the indices at which to calculate skewness values
     window_ends_idx = window_size: window_step: length(x);
     
     % Preallocate array for storing skewness time series
